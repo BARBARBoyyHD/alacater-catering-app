@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(D:\\project\\react-native\\alacater/**)"
+    ]
+  },
+  "$version": 3
+}
