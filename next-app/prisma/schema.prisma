@@ -1,0 +1,493 @@
+// Alacater Database Schema
+// Based on ITA §4 - Database Schema (Prisma)
+// Reference: docs/projects/04.Implementation-Technical-Architecture.md
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum SubscriptionTier {
+  FREE
+  PREMIUM
+}
+
+enum ProductCategory {
+  WEIGHT_LOSS
+  MUSCLE_GAIN
+  KETO
+  VEGAN
+  HALAL
+  BALANCED
+  CUSTOM
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PREPARING
+  SHIPPING
+  DELIVERED
+  FAILED
+  CANCELLED
+}
+
+// ============================================
+// USER & AUTHENTICATION
+// ============================================
+
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  emailVerified   DateTime?
+  passwordHash    String?
+  name            String?
+  phone           String?
+  avatar          String?
+  role            UserRole  @default(CUSTOMER)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  lastLoginAt     DateTime?
+
+  // Relations
+  customer        Customer?
+  provider        Provider?
+  notifications   Notification[]
+
+  @@index([email])
+  @@index([role])
+}
+
+enum UserRole {
+  CUSTOMER
+  PROVIDER
+  ADMIN
+}
+
+// ============================================
+// CUSTOMERS
+// ============================================
+
+model Customer {
+  id              String    @id @default(uuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Preferences
+  defaultAddress  String?
+  dietaryPrefs    String[]  // ["vegan", "keto", "halal", etc.]
+
+  // Stats
+  totalOrders     Int       @default(0)
+  totalSpent      Decimal   @default(0) @db.Decimal(15, 2)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  orders          Order[]
+  reviews         Review[]
+
+  @@index([userId])
+}
+
+// ============================================
+// PROVIDERS
+// ============================================
+
+model Provider {
+  id                String    @id @default(uuid())
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Business Info
+  businessName      String
+  slug              String    @unique
+  description       String?
+  logo              String?
+  banner            String?
+  socialLinks       Json?     // { instagram, facebook, tiktok }
+
+  // Verification
+  isVerified        Boolean   @default(false)
+  verificationDocs  String[]
+
+  // Subscription Tier (BRD Section 6 - Monetization)
+  subscriptionTier  SubscriptionTier @default(FREE)
+  subscriptionStart DateTime?
+  subscriptionEnd   DateTime?
+
+  // Stats
+  totalOrders       Int       @default(0)
+  totalRevenue      Decimal   @default(0) @db.Decimal(15, 2)
+  averageRating     Decimal   @default(0) @db.Decimal(3, 2)
+  totalReviews      Int       @default(0)
+
+  // Settings
+  isActive          Boolean   @default(true)
+  autoAcceptOrders  Boolean   @default(false)
+  shippingFee       Decimal?  @db.Decimal(15, 2)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  products          Product[]
+  orders            Order[]
+  reviews           Review[]
+  deliveryAreas     DeliveryArea[]
+  operatingHours    OperatingHours[]
+  holidays          ProviderHoliday[]
+
+  @@index([userId])
+  @@index([slug])
+  @@index([isVerified])
+  @@index([subscriptionTier])
+}
+
+// ============================================
+// PRODUCTS & MENUS
+// ============================================
+
+model Product {
+  id                String    @id @default(uuid())
+  providerId        String
+  provider          Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  // Product Info
+  name              String
+  slug              String
+  description       String?
+  images            String[]  // Array of image URLs
+
+  // Category
+  category          ProductCategory
+  dietTags          String[]  // ["vegan", "keto", "halal", "low-calorie"]
+
+  // Pricing
+  basePrice         Decimal   @db.Decimal(15, 2)
+
+  // Subscription Options (BRD Section 5.1 - Pemesanan dengan paket langganan)
+  durationOptions   DurationOption[]
+
+  // Meal Plan Options
+  mealPlanOptions   MealPlanOption[]
+
+  // Additional Menus
+  additionalMenus   AdditionalMenu[]
+
+  // Stats
+  totalOrders       Int       @default(0)
+  averageRating     Decimal   @default(0) @db.Decimal(3, 2)
+  totalReviews      Int       @default(0)
+
+  // Status
+  isActive          Boolean   @default(true)
+  isFeatured        Boolean   @default(false)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  orderItems        OrderItem[]
+  reviews           Review[]
+
+  @@index([providerId])
+  @@index([category])
+  @@index([isActive])
+  @@unique([providerId, slug])
+}
+
+model DurationOption {
+  id                String    @id @default(uuid())
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  days              Int       // 5, 10, 20, 60 days
+  price             Decimal   @db.Decimal(15, 2)
+  originalPrice     Decimal?  @db.Decimal(15, 2) // For showing discounts
+  savings           Decimal?  @db.Decimal(15, 2)
+
+  isActive          Boolean   @default(true)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([productId])
+}
+
+model MealPlanOption {
+  id                String    @id @default(uuid())
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  name              String    // "Makan Siang (1 Meal)", "Makan Siang + Malam (2 Meals)"
+  mealsPerDay       Int       // 1 or 2
+  price             Decimal   @db.Decimal(15, 2)
+  originalPrice     Decimal?  @db.Decimal(15, 2)
+  savings           Decimal?  @db.Decimal(15, 2)
+
+  isActive          Boolean   @default(true)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([productId])
+}
+
+model AdditionalMenu {
+  id                String    @id @default(uuid())
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  name              String    // "Snack Bar Diet"
+  description       String?
+  image             String?
+  price             Decimal   @db.Decimal(15, 2)
+  unit              String    // "30 hari", "per piece"
+
+  isActive          Boolean   @default(true)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([productId])
+}
+
+// ============================================
+// ORDERS
+// ============================================
+
+model Order {
+  id                String      @id @default(uuid())
+  orderNumber       String      @unique // ALA-20260402-0001
+
+  // Relations
+  customerId        String
+  customer          Customer    @relation(fields: [customerId], references: [id])
+
+  providerId        String
+  provider          Provider    @relation(fields: [providerId], references: [id])
+
+  // Order Details
+  status            OrderStatus @default(PENDING)
+
+  // Pricing
+  productTotal      Decimal     @db.Decimal(15, 2)
+  shippingFee       Decimal     @db.Decimal(15, 2)
+  platformFee       Decimal     @db.Decimal(15, 2) @default(5000) // Rp5,000 per PRD
+  tax               Decimal     @db.Decimal(15, 2) @default(0)
+  discount          Decimal     @db.Decimal(15, 2) @default(0)
+  grandTotal        Decimal     @db.Decimal(15, 2)
+
+  // Delivery
+  deliveryAddress   String
+  deliveryNotes     String?
+  deliveryWindow    String?     // "10:00-12:00"
+
+  // Payment
+  paymentMethod     String?     // "qris", "va_bca", "ewallet_gopay"
+  paymentStatus     String      @default("pending") // "pending", "paid", "failed", "refunded"
+  paidAt            DateTime?
+  paymentGatewayId  String?     // Midtrans transaction ID
+
+  // Subscription
+  subscriptionId    String?     // Links to subscription context
+  startDate         DateTime
+  endDate           DateTime
+  currentDay        Int         @default(1) // Current day in subscription
+  totalDays         Int         // Total days in subscription
+
+  // Provider override shipping (final at checkout per PRD)
+  shippingOverride  Decimal?    @db.Decimal(15, 2)
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  // Relations
+  items             OrderItem[]
+
+  @@index([customerId])
+  @@index([providerId])
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id                String    @id @default(uuid())
+  orderId           String
+  order             Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id])
+
+  // Snapshot at order time
+  productName       String    // Copy of product name at order time
+  productImage      String?   // Copy of product image at order time
+
+  // Selections
+  durationOptionId  String?
+  mealPlanOptionId  String?
+  additionalMenuIds String[]  // Array of additional menu IDs
+
+  // Pricing
+  unitPrice         Decimal   @db.Decimal(15, 2)
+  quantity          Int       @default(1)
+  subtotal          Decimal   @db.Decimal(15, 2)
+
+  createdAt         DateTime  @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+// ============================================
+// REVIEWS
+// ============================================
+
+model Review {
+  id                String    @id @default(uuid())
+
+  // Author
+  customerId        String
+  customer          Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  // Target
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  providerId        String
+  provider          Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  orderId           String    @unique  // One review per order
+  rating            Int       // 1-5
+  comment           String?
+  images            String[]
+
+  // Moderation
+  isVisible         Boolean   @default(true)
+  isVerified        Boolean   @default(true) // Transaction-verified per PRD
+
+  // Edit window (48h per PRD)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([productId])
+  @@index([providerId])
+  @@index([customerId])
+  @@index([isVisible])
+}
+
+// ============================================
+// DELIVERY & OPERATIONS
+// ============================================
+
+model DeliveryArea {
+  id                String    @id @default(uuid())
+  providerId        String
+  provider          Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  // Area definition
+  name              String    // "Bandung", "Jakarta Selatan"
+  coordinates       Json?     // Polygon coordinates for area
+  radiusKm          Decimal?  @db.Decimal(5, 2) // Alternative: radius-based
+
+  // Pricing
+  fee               Decimal   @db.Decimal(15, 2)
+  minOrder          Decimal?  @db.Decimal(15, 2)
+
+  isActive          Boolean   @default(true)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([providerId])
+  @@index([isActive])
+}
+
+model OperatingHours {
+  id                String    @id @default(uuid())
+  providerId        String
+  provider          Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  dayOfWeek         Int       // 0=Sunday, 6=Saturday
+  openTime          String    // "08:00"
+  closeTime         String    // "17:00"
+  isClosed          Boolean   @default(false)
+
+  // Cutoff time for next day orders (PRD: default H-1 20:00 WIB)
+  cutoffTime        String    @default("20:00")
+
+  isActive          Boolean   @default(true)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([providerId])
+  @@index([dayOfWeek])
+}
+
+model ProviderHoliday {
+  id                String    @id @default(uuid())
+  providerId        String
+  provider          Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  date              DateTime  @db.Date
+  reason            String?
+  isRecurring       Boolean   @default(false) // e.g., national holidays every year
+
+  createdAt         DateTime  @default(now())
+
+  @@index([providerId])
+  @@index([date])
+  @@unique([providerId, date])
+}
+
+// ============================================
+// NOTIFICATIONS
+// ============================================
+
+model Notification {
+  id                String          @id @default(uuid())
+
+  userId            String
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type              NotificationType
+  title             String
+  message           String
+  data              Json?           // Additional payload (orderId, etc.)
+
+  isRead            Boolean         @default(false)
+  readAt            DateTime?
+
+  createdAt         DateTime        @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt(sort: Desc)])
+}
+
+enum NotificationType {
+  ORDER_CREATED
+  ORDER_PAID
+  ORDER_PREPARING
+  ORDER_SHIPPING
+  ORDER_DELIVERED
+  ORDER_FAILED
+  ORDER_CANCELLED
+  PAYMENT_RECEIVED
+  REVIEW_RECEIVED
+  SUBSCRIPTION_EXPIRING
+  SUBSCRIPTION_EXPIRED
+  SYSTEM_ALERT
+}
