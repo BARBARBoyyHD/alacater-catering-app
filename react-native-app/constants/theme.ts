@@ -1,29 +1,127 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Alacater Color Guidelines & Design Tokens
+ * Reference: docs/projects/02.Color-Guidelines.md
+ *
+ * Primary Brand: #FF7B00 (Orange)
+ * All UI components should use these color tokens for consistency.
  */
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+// Primary Brand Colors
+const primaryOrange = '#FF7B00';
+const primaryOrangeLight = '#FFF5EB';
+const primaryOrangeDark = '#E56E00';
+
+// Secondary Colors
+const successGreen = '#1B5E3A';
+const successGreenLight = '#2E7D52';
+const infoBlue = '#4A6FA5';
+
+// Neutral Colors
+const white = '#FFFFFF';
+const backgroundGray = '#F5F5F5';
+const borderLight = '#E5E5E5';
+const borderMedium = '#CCCCCC';
+const textPrimary = '#333333';
+const textSecondary = '#666666';
+const textTertiary = '#999999';
+
+// Semantic Colors
+const errorRed = '#FF3B30';
+const warningYellow = '#FFB800';
+const disabled = '#CCCCCC';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    // Brand
+    primary: primaryOrange,
+    primaryLight: primaryOrangeLight,
+    primaryDark: primaryOrangeDark,
+
+    // Backgrounds
+    background: backgroundGray,
+    card: white,
+    selectedCard: primaryOrangeLight,
+
+    // Text
+    text: textPrimary,
+    textSecondary: textSecondary,
+    textTertiary: textTertiary,
+    onPrimary: white, // Text on primary orange background
+
+    // UI Elements
+    border: borderLight,
+    borderMedium: borderMedium,
+    inputBackground: white,
+    inputBorder: borderMedium,
+    inputBorderFocused: primaryOrange,
+    inputBorderError: errorRed,
+
+    // Semantic
+    success: successGreen,
+    successLight: successGreenLight,
+    info: infoBlue,
+    warning: warningYellow,
+    error: errorRed,
+    disabled: disabled,
+
+    // Status Badges
+    shipping: infoBlue,
+    delivered: successGreen,
+    pending: warningYellow,
+    cancelled: errorRed,
+
+    // Icons
+    icon: textSecondary,
+    iconOnPrimary: white,
+    tabIconDefault: textTertiary,
+    tabIconSelected: primaryOrange,
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    // Brand (adjusted for dark mode per Color Guidelines)
+    primary: primaryOrange,
+    primaryLight: '#3D2E00', // Darker version of light orange
+    primaryDark: primaryOrangeDark,
+
+    // Backgrounds
+    background: '#242424',
+    card: '#1A1A1A',
+    selectedCard: '#3D2E00',
+
+    // Text
+    text: '#E0E0E0',
+    textSecondary: '#B0B0B0',
+    textTertiary: '#808080',
+    onPrimary: white,
+
+    // UI Elements
+    border: '#3A3A3A',
+    borderMedium: '#4A4A4A',
+    inputBackground: '#242424',
+    inputBorder: '#4A4A4A',
+    inputBorderFocused: primaryOrange,
+    inputBorderError: errorRed,
+
+    // Semantic
+    success: successGreenLight,
+    successLight: successGreen,
+    info: infoBlue,
+    warning: warningYellow,
+    error: errorRed,
+    disabled: '#505050',
+
+    // Status Badges
+    shipping: infoBlue,
+    delivered: successGreenLight,
+    pending: warningYellow,
+    cancelled: errorRed,
+
+    // Icons
+    icon: '#B0B0B0',
+    iconOnPrimary: white,
+    tabIconDefault: '#808080',
+    tabIconSelected: primaryOrange,
   },
 };
 

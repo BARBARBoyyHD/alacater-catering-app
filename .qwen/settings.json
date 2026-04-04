@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Read(D:\\project\\react-native\\alacater/**)"
+      "Read(D:\\project\\react-native\\alacater/**)",
+      "Bash(openspec *)",
+      "Bash(mkdir *)",
+      "Bash(npx *)",
+      "Bash(npm ls *)",
+      "Bash(npm run *)",
+      "Bash(type *)"
     ]
   },
   "$version": 3
