@@ -36,64 +36,23 @@ const queryClient = new QueryClient({
 
 export const unstable_settings = {
   anchor: '(tabs)',
+  initialRouteName: '(auth)/welcome',
 };
 
-export default function RootLayout() {
+function RootLayoutContent() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const [isReady, setIsReady] = useState(false);
 
   /**
-   * Task 3.9: Supabase auth state listener
-   * Listens to session changes and syncs with Zustand store.
-   * Handles: login, logout, token refresh, server-side session invalidation.
+   * Task 3.9: Supabase auth state listener - DISABLED FOR MOCKUP
    */
   const setupAuthListener = useCallback(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('[Auth] State change:', event, session?.user?.id ?? 'no user');
-
-      switch (event) {
-        case 'SIGNED_IN':
-          // User logged in - store biometric state if enabled
-          if (session?.refresh_token) {
-            // Note: Biometric enrollment would be triggered by user action, not here
-          }
-          break;
-
-        case 'SIGNED_OUT':
-          // User logged out - reset auth UI state
-          useAuthUIStore.getState().resetState();
-          break;
-
-        case 'TOKEN_REFRESHED':
-          // Token was refreshed automatically by Supabase
-          // Session is still valid, no action needed
-          break;
-
-        case 'USER_UPDATED':
-          // User profile was updated
-          break;
-
-        case 'PASSWORD_RECOVERY':
-          // Password recovery initiated
-          break;
-
-        default:
-          break;
-      }
-    });
-
-    // Cleanup subscription on unmount
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => {};
   }, []);
 
   /**
    * Initialize Google Sign-In on app start.
-   * Configuration uses environment-specific client IDs.
    */
   const setupGoogleSignIn = useCallback(() => {
     const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
@@ -107,30 +66,19 @@ export default function RootLayout() {
       config.androidClientId = androidClientId;
     }
 
-    // Only configure if client IDs are available
     if (Object.keys(config).length > 0) {
       GoogleSignin.configure(config);
     }
   }, []);
 
   /**
-   * Initial session check on app cold start.
-   * Restores session from secure storage (handled automatically by Supabase
-   * since we configured secure storage adapter).
+   * Initial session check - BYPASSED FOR MOCKUP
    */
   const checkInitialSession = useCallback(async () => {
     try {
-      // Supabase automatically restores session from secure storage
-      // We just need to check if a session exists
-      const { data } = await supabase.auth.getSession();
-
-      if (data.session) {
-        // User has an active session - stay on app stack
-        console.log('[Auth] Session restored:', data.session.user.id);
-      } else {
-        // No session - user will see auth flow
-        console.log('[Auth] No session found');
-      }
+      // Mocked delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      console.log('[Auth] Mocking session check - starting at welcome');
     } catch (error) {
       console.error('[Auth] Session check error:', error);
     } finally {
@@ -139,17 +87,12 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    // Set up auth listener and Google Sign-In
     const cleanup = setupAuthListener();
     setupGoogleSignIn();
-
-    // Check initial session
     checkInitialSession();
-
     return cleanup;
   }, [setupAuthListener, setupGoogleSignIn, checkInitialSession]);
 
-  // Show blank screen while initializing (very brief)
   if (!isReady) {
     return null;
   }
@@ -180,19 +123,27 @@ export default function RootLayout() {
   };
 
   return (
+    <ThemeProvider value={colorScheme === 'dark' ? alacaterDarkTheme : alacaterLightTheme}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+        initialRouteName="(auth)/welcome"
+      >
+        {/* Auth first for mockup flow */}
+        <Stack.Screen name="(auth)" options={{ headerShown: false, animation: 'none' }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+      </Stack>
+      <StatusBar style="auto" />
+    </ThemeProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === 'dark' ? alacaterDarkTheme : alacaterLightTheme}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <RootLayoutContent />
     </QueryClientProvider>
   );
 }
