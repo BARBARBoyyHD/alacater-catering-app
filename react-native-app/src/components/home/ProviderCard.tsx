@@ -11,9 +11,14 @@ interface ProviderCardProps {
   onPackagePress?: (id: string) => void;
 }
 
+import { useRouter } from 'expo-router';
+
 export function ProviderCard({ provider, onProviderPress, onPackagePress }: ProviderCardProps) {
+  const router = useRouter();
+  const handlePress = () => router.push(`/provider/${provider.id}`);
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={handlePress}>
       <View style={styles.header}>
         <View style={styles.providerInfo}>
           <View style={styles.logo}>
@@ -34,9 +39,7 @@ export function ProviderCard({ provider, onProviderPress, onPackagePress }: Prov
             </View>
           </View>
         </View>
-        <TouchableOpacity onPress={() => onProviderPress?.(provider.id)}>
-          <Ionicons name="chevron-forward" size={24} color={Colors.primary} />
-        </TouchableOpacity>
+        <Ionicons name="chevron-forward" size={24} color={Colors.primary} />
       </View>
       <ScrollView
         horizontal
@@ -47,7 +50,7 @@ export function ProviderCard({ provider, onProviderPress, onPackagePress }: Prov
           <PackageCard key={pkg.id} pkg={pkg} onPress={onPackagePress} />
         ))}
       </ScrollView>
-    </View>
+    </TouchableOpacity>
   );
 }
 

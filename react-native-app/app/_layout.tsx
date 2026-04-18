@@ -21,109 +21,72 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { supabase } from '@/src/config/supabase';
-import { useAuthUIStore } from '@/src/store/authStore';
-import { Colors } from '@/constants/theme';
+import { useAuthStore } from '@/src/store/authStore';
 
-// Create QueryClient instance (stable across re-renders)
+// Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1,
     },
   },
 });
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-  initialRouteName: '(auth)/welcome',
-};
+import { useNotificationStore } from '@/src/store/notificationStore';
 
 function RootLayoutContent() {
   const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? 'light'];
-  const [isReady, setIsReady] = useState(false);
+  const { setSession, setLoading, session } = useAuthStore();
+  const { addNotification } = useNotificationStore();
 
-  /**
-   * Task 3.9: Supabase auth state listener - DISABLED FOR MOCKUP
-   */
-  const setupAuthListener = useCallback(() => {
-    return () => {};
-  }, []);
-
-  /**
-   * Initialize Google Sign-In on app start.
-   */
-  const setupGoogleSignIn = useCallback(() => {
-    const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
-    const androidClientId = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID;
-
-    const config: { iosClientId?: string; androidClientId?: string } = {};
-
-    if (Platform.OS === 'ios' && iosClientId) {
-      config.iosClientId = iosClientId;
-    } else if (Platform.OS === 'android' && androidClientId) {
-      config.androidClientId = androidClientId;
-    }
-
-    if (Object.keys(config).length > 0) {
-      GoogleSignin.configure(config);
-    }
-  }, []);
-
-  /**
-   * Initial session check - BYPASSED FOR MOCKUP
-   */
-  const checkInitialSession = useCallback(async () => {
-    try {
-      // Mocked delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      console.log('[Auth] Mocking session check - starting at welcome');
-    } catch (error) {
-      console.error('[Auth] Session check error:', error);
-    } finally {
-      setIsReady(true);
-    }
-  }, []);
-
+  // Initialize Notification listeners (Mock)
   useEffect(() => {
-    const cleanup = setupAuthListener();
-    setupGoogleSignIn();
-    checkInitialSession();
-    return cleanup;
-  }, [setupAuthListener, setupGoogleSignIn, checkInitialSession]);
+    // Mock incoming notification after 5 seconds
+    const timer = setTimeout(() => {
+      addNotification({
+        id: 'mock-1',
+        title: 'Pesanan Diterima',
+        body: 'Pesanan #ALA-982310 sedang disiapkan.',
+        data: { screen: 'order-detail', id: 'ALA-982310' },
+        read: false,
+        timestamp: Date.now(),
+      });
+    }, 5000);
 
-  if (!isReady) {
-    return null;
-  }
+    return () => clearTimeout(timer);
+  }, [addNotification]);
 
-  // Custom themes using Alacater colors
-  const alacaterLightTheme = {
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-      primary: colors.primary,
-      background: colors.background,
-      card: colors.card,
-      text: colors.text,
-      border: colors.border,
-    },
-  };
 
-  const alacaterDarkTheme = {
-    ...DarkTheme,
-    colors: {
-      ...DarkTheme.colors,
-      primary: colors.primary,
-      background: colors.background,
-      card: colors.card,
-      text: colors.text,
-      border: colors.border,
-    },
-  };
+  // Initialize Supabase auth listener
+  useEffect(() => {
+    setLoading(true);
+    
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [setSession, setLoading]);
+
+  // Initialize Google Sign-In
+  useEffect(() => {
+    if (Platform.OS !== 'web') {
+      GoogleSignin.configure({
+        webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+        iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+      });
+    }
+  }, []);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? alacaterDarkTheme : alacaterLightTheme}>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack
         screenOptions={{
           headerShown: false,
@@ -133,6 +96,11 @@ function RootLayoutContent() {
         {/* Auth first for mockup flow */}
         <Stack.Screen name="(auth)" options={{ headerShown: false, animation: 'none' }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="checkout" options={{ headerShown: false }} />
+        <Stack.Screen name="order-detail/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="provider/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="reviews/new" options={{ headerShown: false }} />
+        <Stack.Screen name="reviews/list" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar style="auto" />

@@ -3,7 +3,7 @@
 **Project:** Alacater  
 **Version:** 1.0.0  
 **Last Updated:** 2026-04-02  
-**Related:** [OpenSpec](./openspec.md), [ITA](./projects/04.Implementation-Technical-Architecture.md), [BRD](./projects/01.BRD-alacater.md)
+**Related:** [OpenSpec](./openspec.md), [ITA](./docs/projects/2-technical/04.Implementation-Technical-Architecture.md), [BRD](./docs/projects/1-business/01.BRD-alacater.md)
 
 ---
 
@@ -41,26 +41,38 @@ This document defines how AI assistants should interact with the Alacater codeba
 
 | Layer | Technology | Reference |
 |-------|------------|-----------|
-| **Mobile** | React Native 0.76+ | [ITA §2.1](./projects/04.Implementation-Technical-Architecture.md#21-frontend-applications) |
-| **Web** | Next.js 15+ | [ITA §2.1](./projects/04.Implementation-Technical-Architecture.md#21-frontend-applications) |
-| **Database** | Supabase PostgreSQL + Prisma | [ITA §2.2](./projects/04.Implementation-Technical-Architecture.md#22-backend--infrastructure) |
-| **State** | TanStack Query + Zustand | [ITA §2.1](./projects/04.Implementation-Technical-Architecture.md#21-frontend-applications) |
-| **UI** | Custom (per Color Guidelines) | [Color Guidelines](./projects/02.Color-Guidelines.md) |
+| **Mobile** | React Native 0.76+ | [ITA §2.1](./docs/projects/2-technical/04.Implementation-Technical-Architecture.md#21-frontend-applications) |
+| **Web** | Next.js 15+ | [ITA §2.1](./docs/projects/2-technical/04.Implementation-Technical-Architecture.md#21-frontend-applications) |
+| **Database** | Supabase PostgreSQL + Prisma | [ITA §2.2](./docs/projects/2-technical/04.Implementation-Technical-Architecture.md#22-backend--infrastructure) |
+| **State** | TanStack Query + Zustand | [ITA §2.1](./docs/projects/2-technical/04.Implementation-Technical-Architecture.md#21-frontend-applications) |
+| **UI** | Custom (per Color Guidelines) | [Color Guidelines](./docs/projects/3-design/02.Color-Guidelines.md) |
 
 ### 3.2 Key Documents
 
 | Document | Purpose | Location |
 |----------|---------|----------|
-| **BRD** | Business requirements | [`projects/01.BRD-alacater.md`](./projects/01.BRD-alacater.md) |
-| **PRD** | Product requirements | [`projects/PRD.md`](./projects/PRD.md) |
-| **SCOPE** | Project scope & monetization | [`projects/SCOPE.md`](./projects/SCOPE.md) |
-| **ITA** | Technical architecture | [`projects/04.Implementation-Technical-Architecture.md`](./projects/04.Implementation-Technical-Architecture.md) |
-| **Backlog** | Task breakdown | [`projects/05.Product-Backlog.md`](./projects/05.Product-Backlog.md) |
-| **Colors** | Design system | [`projects/02.Color-Guidelines.md`](./projects/02.Color-Guidelines.md) |
+| **BRD** | Business requirements | [`docs/projects/1-business/01.BRD-alacater.md`](./docs/projects/1-business/01.BRD-alacater.md) |
+| **PRD** | Product requirements | [`docs/projects/1-business/PRD.md`](./docs/projects/1-business/PRD.md) |
+| **SCOPE** | Project scope & monetization | [`docs/projects/1-business/SCOPE.md`](./docs/projects/1-business/SCOPE.md) |
+| **ITA** | Technical architecture | [`docs/projects/2-technical/04.Implementation-Technical-Architecture.md`](./docs/projects/2-technical/04.Implementation-Technical-Architecture.md) |
+| **Backlog** | Task breakdown | [`docs/projects/4-planning/05.Product-Backlog.md`](./docs/projects/4-planning/05.Product-Backlog.md) |
+| **Colors** | Design system | [`docs/projects/3-design/02.Color-Guidelines.md`](./docs/projects/3-design/02.Color-Guidelines.md) |
 
 ---
 
 ## 4. Code Generation Guidelines
+
+### 4.5 Mandatory Pre-Flight UI Check
+Before writing any UI code (React Native or Next.js), the agent MUST perform a pre-flight check:
+1. **Read Requirement:** Open `docs/projects/3-design/02.Color-Guidelines.md` and relevant project files.
+2. **Verification:** Confirm the color tokens (`Colors.primary`, `Colors.textPrimary`, etc.) that will be used.
+3. **Output:** Before writing code, output a block titled `### Pre-Flight UI Check`:
+   ```
+   ### Pre-Flight UI Check
+   - [ ] Color Guidelines read
+   - [ ] Tokens identified: [list tokens]
+   ```
+4. **Execution:** Only proceed to code generation after this check is complete.
 
 ### 4.1 TypeScript Standards
 
@@ -98,7 +110,7 @@ export function ProductCard({ product, onPress }: ProductCardProps) {
 
 ### 4.3 Color Usage
 
-Always reference the [Color Guidelines](./projects/02.Color-Guidelines.md):
+Always reference the [Color Guidelines](./docs/projects/3-design/02.Color-Guidelines.md):
 
 ```typescript
 import { Colors } from '@/constants/colors';
@@ -172,7 +184,7 @@ const createOrder = useMutation({
 
 ### 6.1 Prisma Reference
 
-All database models defined in [ITA §4](./projects/04.Implementation-Technical-Architecture.md#4-database-schema-prisma):
+All database models defined in [ITA §4](./docs/projects/2-technical/04.Implementation-Technical-Architecture.md#4-database-schema-prisma):
 
 **Key Models:**
 - `User`, `Customer`, `Provider`
@@ -197,14 +209,14 @@ const product = await prisma.product.findUnique({
 
 ## 7. Business Rules Reference
 
-### 7.1 Monetization (from [SCOPE.md](./projects/SCOPE.md))
+### 7.1 Monetization (from [SCOPE.md](./docs/projects/1-business/SCOPE.md))
 
 | Tier | Commission | Platform Fee | Subscription |
 |------|------------|--------------|--------------|
 | **Free** | 6% | Rp5,000 (customer) | Gratis |
 | **Premium** | 3% | Rp5,000 (customer) | Rp499.000/bulan |
 
-### 7.2 Key Policies (from [PRD.md](./projects/PRD.md))
+### 7.2 Key Policies (from [PRD.md](./docs/projects/1-business/PRD.md))
 
 - **Cutoff:** H-1, 20:00 WIB (default) for subscription changes
 - **Payment:** One-time per package (no auto-renewal)
@@ -291,7 +303,7 @@ setLoading(true);
 
 ### 11.2 API Documentation
 
-All API endpoints documented in [ITA §5](./projects/04.Implementation-Technical-Architecture.md#5-api-specification) (if exists) or via OpenAPI spec.
+All API endpoints documented in [ITA §5](./docs/projects/2-technical/04.Implementation-Technical-Architecture.md#5-api-specification) (if exists) or via OpenAPI spec.
 
 ---
 
@@ -315,7 +327,7 @@ When making implementation decisions, follow this hierarchy:
 2. Add route to navigation config
 3. Create associated hooks/services
 4. Write tests
-5. Update [Backlog](./projects/05.Product-Backlog.md) status
+5. Update [Backlog](./docs/projects/4-planning/05.Product-Backlog.md) status
 
 ### 13.2 Adding a New Component
 
@@ -339,6 +351,7 @@ When making implementation decisions, follow this hierarchy:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1.0 | 2026-04-18 | Organized docs into sub-folders |
 | 1.0.0 | 2026-04-02 | Initial creation with DRY/KISS principles |
 
 ---

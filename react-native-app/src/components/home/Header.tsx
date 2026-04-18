@@ -2,15 +2,17 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/src/constants/colors';
+import { useNotificationStore } from '@/src/store/notificationStore';
 
 interface HeaderProps {
   location: string;
   onLocationPress: () => void;
-  notificationCount?: number;
   chatCount?: number;
 }
 
-export function Header({ location, onLocationPress, notificationCount = 2, chatCount = 2 }: HeaderProps) {
+export function Header({ location, onLocationPress, chatCount = 2 }: HeaderProps) {
+  const { unreadCount } = useNotificationStore();
+  
   return (
     <View style={styles.container}>
       <Text style={styles.locationLabel}>Lokasi</Text>
@@ -33,9 +35,9 @@ export function Header({ location, onLocationPress, notificationCount = 2, chatC
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton}>
             <Ionicons name="notifications" size={24} color={Colors.textPrimary} />
-            {notificationCount > 0 && (
+            {unreadCount > 0 && (
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>{notificationCount}</Text>
+                <Text style={styles.badgeText}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
               </View>
             )}
           </TouchableOpacity>

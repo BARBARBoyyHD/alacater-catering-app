@@ -146,11 +146,93 @@ model Provider {
   deliveryAreas     DeliveryArea[]
   operatingHours    OperatingHours[]
   holidays          ProviderHoliday[]
+  wallet            Wallet?
 
   @@index([userId])
   @@index([slug])
   @@index([isVerified])
   @@index([subscriptionTier])
+}
+
+// ============================================
+// WALLET & LEDGER SYSTEM
+// ============================================
+
+model Wallet {
+  id                String    @id @default(uuid())
+  providerId        String    @unique
+  provider          Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  // Balances
+  availableBalance  Decimal   @default(0) @db.Decimal(15, 2)
+  pendingWithdrawal Decimal   @default(0) @db.Decimal(15, 2)
+
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  transactions      WalletTransaction[]
+  disbursements     Disbursement[]
+
+  @@index([providerId])
+}
+
+model WalletTransaction {
+  id                String                @id @default(uuid())
+  walletId          String
+  wallet            Wallet                @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  amount            Decimal               @db.Decimal(15, 2)
+  type              WalletTransactionType
+  status            String                @default("COMPLETED") // "COMPLETED", "PENDING", "FAILED"
+  
+  // Reference for tracking origin
+  referenceId       String?               // Order ID or Disbursement ID
+  description       String?
+
+  createdAt         DateTime              @default(now())
+
+  @@index([walletId])
+  @@index([type])
+  @@index([referenceId])
+}
+
+enum WalletTransactionType {
+  PAYMENT       // Money coming in from order
+  WITHDRAWAL    // Money going out to bank
+  REFUND        // Money going back to customer
+  FEE           // Platform fee deduction
+  SUBSCRIPTION  // Subscription payment deduction
+}
+
+model Disbursement {
+  id                String             @id @default(uuid())
+  walletId          String
+  wallet            Wallet             @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  amount            Decimal            @db.Decimal(15, 2)
+  status            DisbursementStatus @default(PENDING)
+  
+  // Bank Details (Snapshotted at time of request)
+  bankName          String
+  accountNumber     String
+  accountName       String
+
+  // Gateway Reference
+  gatewayId         String?            // External ID from Xendit/Midtrans
+  failureReason     String?
+
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([walletId])
+  @@index([status])
+}
+
+enum DisbursementStatus {
+  PENDING      // Request received, balance locked
+  PROCESSING   // Sent to gateway
+  SUCCESS      // Money confirmed in bank
+  FAILED       // Rejected by gateway/bank, balance returned
 }
 
 // ============================================

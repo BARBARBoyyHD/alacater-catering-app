@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { Colors } from '@/src/constants/colors';
 import { Package } from '@/src/data/mockData';
 
@@ -10,6 +11,7 @@ interface PackageCardProps {
 }
 
 export function PackageCard({ pkg, onPress }: PackageCardProps) {
+  const router = useRouter();
   const formatPrice = (price: number) => {
     return `Rp${price.toLocaleString('id-ID')}`;
   };
@@ -17,7 +19,7 @@ export function PackageCard({ pkg, onPress }: PackageCardProps) {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => onPress?.(pkg.id)}
+      onPress={() => router.push('/product-detail')}
       activeOpacity={0.8}
     >
       <Image source={{ uri: pkg.image }} style={styles.image} />

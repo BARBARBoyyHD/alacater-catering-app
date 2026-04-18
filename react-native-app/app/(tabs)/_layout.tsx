@@ -26,7 +26,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="orders"
+        name="orders/index"
         options={{
           title: 'Pesanan Saya',
           tabBarIcon: ({ color }) => <Ionicons name="bag" size={24} color={color} />,

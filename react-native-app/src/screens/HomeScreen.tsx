@@ -5,7 +5,6 @@ import { Header } from '@/src/components/home/Header';
 import { SearchSection } from '@/src/components/home/SearchSection';
 import { ProviderCard } from '@/src/components/home/ProviderCard';
 import { PromoBannerCarousel } from '@/src/components/common/PromoBanner';
-import { BottomNavigation } from '@/src/components/common/BottomNavigation';
 import { Colors } from '@/src/constants/colors';
 import {
   cateringData,
@@ -13,14 +12,12 @@ import {
   promoBanners,
   locations,
 } from '@/src/data/mockData';
-import type { TabName } from '@/src/components/common/BottomNavigation';
 import type { FilterOption } from '@/src/data/mockData';
 
 export default function HomeScreen() {
   const [location, setLocation] = useState(locations[0]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<FilterOption[]>(filterOptions);
-  const [activeTab, setActiveTab] = useState<TabName>('home');
 
   const handleLocationPress = () => {
     // TODO: Open location selector modal
@@ -73,9 +70,6 @@ export default function HomeScreen() {
           />
         ))}
       </ScrollView>
-
-      {/* Bottom Navigation */}
-      <BottomNavigation activeTab={activeTab} onTabPress={setActiveTab} />
     </SafeAreaView>
   );
 }
