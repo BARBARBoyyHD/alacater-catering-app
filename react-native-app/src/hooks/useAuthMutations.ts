@@ -30,21 +30,20 @@ export function useSignUp() {
   const { setLoading, setError, resetState } = useAuthUIStore();
 
   return useMutation({
-    mutationFn: ({ email, password, fullName }: { email: string; password: string; fullName: string }) =>
-      signUpWithEmail(email, password, fullName),
+    mutationFn: async ({ email, password, fullName }: { email: string; password: string; fullName: string }) => {
+      // Mock delay for UI feedback
+      await new Promise(resolve => setTimeout(resolve, 800));
+      return { session: { user: { id: 'mock-id', email } }, user: { id: 'mock-id', email }, error: null };
+    },
     onMutate: () => {
       setLoading(true);
       setError(null);
     },
     onSuccess: (data) => {
       setLoading(false);
-      if (data.error) {
-        setError(data.error.message);
-      } else {
-        resetState();
-        // Navigate to app home (Expo Router will handle auth guard)
-        router.replace('/(tabs)');
-      }
+      resetState();
+      // Navigate to app home (Mocking success)
+      router.replace('/(tabs)');
     },
     onError: (error: Error) => {
       setLoading(false);
@@ -61,20 +60,19 @@ export function useLogin() {
   const { setLoading, setError, resetState } = useAuthUIStore();
 
   return useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
-      loginWithEmail(email, password),
+    mutationFn: async ({ email, password }: { email: string; password: string }) => {
+      // Mock delay for UI feedback
+      await new Promise(resolve => setTimeout(resolve, 800));
+      return { session: { user: { id: 'mock-id', email } }, user: { id: 'mock-id', email }, error: null };
+    },
     onMutate: () => {
       setLoading(true);
       setError(null);
     },
     onSuccess: (data) => {
       setLoading(false);
-      if (data.error) {
-        setError(data.error.message);
-      } else {
-        resetState();
-        router.replace('/(tabs)');
-      }
+      resetState();
+      router.replace('/(tabs)');
     },
     onError: (error: Error) => {
       setLoading(false);
@@ -92,18 +90,9 @@ export function useGoogleLogin() {
 
   return useMutation({
     mutationFn: async () => {
-      // Initialize Google Sign-In
-      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-      const signInResult = await GoogleSignin.signIn();
-
-      // Get ID token from result
-      const idToken = signInResult.data?.idToken;
-      if (!idToken) {
-        throw new Error('Google Sign-In failed: No ID token received');
-      }
-
-      // Exchange ID token with Supabase
-      return loginWithGoogle(idToken);
+      // Mock delay for UI feedback
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return { session: { user: { id: 'mock-google-id' } }, user: { id: 'mock-google-id' }, error: null };
     },
     onMutate: () => {
       setLoading(true);
@@ -111,25 +100,12 @@ export function useGoogleLogin() {
     },
     onSuccess: (data) => {
       setLoading(false);
-      if (data.error) {
-        setError(data.error.message);
-      } else {
-        resetState();
-        router.replace('/(tabs)');
-      }
+      resetState();
+      router.replace('/(tabs)');
     },
     onError: (error: Error) => {
       setLoading(false);
-      // Handle specific Google Sign-In errors
-      if (error.message === statusCodes.SIGN_IN_CANCELLED) {
-        setError(null); // User cancelled, no error shown
-      } else if (error.message === statusCodes.IN_PROGRESS) {
-        setError(null); // Operation in progress, ignore
-      } else if (error.message === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        setError('Google Play Services not available. Please use email/password.');
-      } else {
-        setError(error.message || 'Google Sign-In failed. Please try again.');
-      }
+      setError(error.message || 'Google Sign-In failed. Please try again.');
     },
   });
 }
@@ -142,18 +118,23 @@ export function useSendPhoneOtp() {
   const { setLoading, setError } = useAuthUIStore();
 
   return useMutation({
-    mutationFn: ({ phone }: { phone: string }) => sendPhoneOtp(phone),
+    mutationFn: async ({ phone }: { phone: string }) => {
+      // Mock delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      return { error: null };
+    },
     onMutate: () => {
       setLoading(true);
       setError(null);
     },
     onSuccess: (data) => {
       setLoading(false);
-      if (data.error) {
-        setError(data.error.message);
-      }
       // If no error, navigate to OTP input screen
       // (handled by the PhoneOTPInputScreen on success)
+      router.push({
+        pathname: '/(auth)/phone-otp',
+        params: { phone: 'mock-phone' } // In a real app we'd pass the actual phone
+      });
     },
     onError: (error: Error) => {
       setLoading(false);
@@ -166,20 +147,19 @@ export function useVerifyPhoneOtp() {
   const { setLoading, setError, resetState } = useAuthUIStore();
 
   return useMutation({
-    mutationFn: ({ phone, token }: { phone: string; token: string }) =>
-      verifyPhoneOtp(phone, token),
+    mutationFn: async ({ phone, token }: { phone: string; token: string }) => {
+      // Mock delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      return { session: { user: { id: 'mock-phone-id' } }, user: { id: 'mock-phone-id' }, error: null };
+    },
     onMutate: () => {
       setLoading(true);
       setError(null);
     },
     onSuccess: (data) => {
       setLoading(false);
-      if (data.error) {
-        setError(data.error.message);
-      } else {
-        resetState();
-        router.replace('/(tabs)');
-      }
+      resetState();
+      router.replace('/(tabs)');
     },
     onError: (error: Error) => {
       setLoading(false);
@@ -229,17 +209,19 @@ export function useSendPasswordResetEmail() {
   const { setLoading, setError } = useAuthUIStore();
 
   return useMutation({
-    mutationFn: ({ email }: { email: string }) => sendResetEmail(email),
+    mutationFn: async ({ email }: { email: string }) => {
+      // Mock delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      return { error: null };
+    },
     onMutate: () => {
       setLoading(true);
       setError(null);
     },
     onSuccess: (data) => {
       setLoading(false);
-      if (data.error) {
-        setError(data.error.message);
-      }
-      // Navigate to confirmation screen regardless (prevents email enumeration)
+      // Navigate to confirmation screen regardless
+      router.push('/(auth)/reset-password-sent');
     },
     onError: (error: Error) => {
       setLoading(false);
@@ -256,19 +238,19 @@ export function useUpdatePassword() {
   const { setLoading, setError, resetState } = useAuthUIStore();
 
   return useMutation({
-    mutationFn: ({ password }: { password: string }) => updatePasswordService(password),
+    mutationFn: async ({ password }: { password: string }) => {
+      // Mock delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      return { error: null };
+    },
     onMutate: () => {
       setLoading(true);
       setError(null);
     },
     onSuccess: (data) => {
       setLoading(false);
-      if (data.error) {
-        setError(data.error.message);
-      } else {
-        resetState();
-        router.replace('/(tabs)');
-      }
+      resetState();
+      router.replace('/(tabs)');
     },
     onError: (error: Error) => {
       setLoading(false);

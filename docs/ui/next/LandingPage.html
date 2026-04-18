@@ -1,0 +1,674 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              background: "#fff8f5",
+              "secondary-fixed": "#ffdbc8",
+              "on-secondary-fixed": "#321300",
+              "primary-fixed": "#ffdbc8",
+              "tertiary-fixed": "#aef2c2",
+              "inverse-on-surface": "#ffede5",
+              "surface-container": "#ffeadf",
+              "tertiary-container": "#6eaf84",
+              "on-background": "#251912",
+              "on-secondary-fixed-variant": "#71370b",
+              "on-secondary-container": "#783d11",
+              "on-error-container": "#93000a",
+              primary: "#994700",
+              "on-primary-container": "#5d2900",
+              "surface-container-high": "#fbe4d7",
+              secondary: "#8e4e21",
+              "surface-bright": "#fff8f5",
+              "secondary-fixed-dim": "#ffb68a",
+              "on-secondary": "#ffffff",
+              "tertiary-fixed-dim": "#92d5a8",
+              "on-error": "#ffffff",
+              tertiary: "#296a45",
+              "surface-tint": "#994700",
+              "surface-container-highest": "#f5ded2",
+              "on-tertiary-fixed": "#00210f",
+              "on-tertiary-fixed-variant": "#09522f",
+              "surface-variant": "#f5ded2",
+              "primary-container": "#ff7b00",
+              "surface-container-low": "#fff1ea",
+              "secondary-container": "#ffab76",
+              "surface-dim": "#edd5ca",
+              "on-tertiary": "#ffffff",
+              "on-surface": "#251912",
+              "inverse-primary": "#ffb68a",
+              "outline-variant": "#e0c0af",
+              outline: "#8c7263",
+              surface: "#fff8f5",
+              "on-primary-fixed-variant": "#743500",
+              "on-tertiary-container": "#004123",
+              "primary-fixed-dim": "#ffb68a",
+              "error-container": "#ffdad6",
+              error: "#ba1a1a",
+              "surface-container-lowest": "#ffffff",
+              "on-surface-variant": "#584235",
+              "inverse-surface": "#3b2d26",
+              "on-primary-fixed": "#321300",
+              "on-primary": "#ffffff",
+            },
+            borderRadius: {
+              DEFAULT: "0.125rem",
+              lg: "0.25rem",
+              xl: "0.5rem",
+              full: "0.75rem",
+            },
+            fontFamily: {
+              headline: ["Inter"],
+              body: ["Inter"],
+              label: ["Inter"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+        display: inline-block;
+        line-height: 1;
+        text-transform: none;
+        letter-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        direction: ltr;
+      }
+      .signature-gradient {
+        background: linear-gradient(135deg, #994700 0%, #ff7b00 100%);
+      }
+      .glass-card {
+        background: rgba(255, 248, 245, 0.8);
+        backdrop-filter: blur(24px);
+      }
+    </style>
+  </head>
+  <body class="bg-background text-on-background font-body antialiased">
+    <!-- TopNavBar -->
+    <header
+      class="bg-white/80 dark:bg-stone-950/80 backdrop-blur-md shadow-sm dark:shadow-none docked full-width top-0 sticky z-50"
+    >
+      <nav
+        class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto font-sans antialiased tracking-tight"
+      >
+        <div
+          class="text-2xl font-black tracking-tighter text-orange-600 dark:text-orange-500"
+        >
+          AlaCater Mitra
+        </div>
+        <div class="hidden md:flex items-center space-x-8">
+          <a
+            class="text-orange-600 dark:text-orange-500 font-bold border-b-2 border-orange-600 transition-colors duration-200"
+            href="#"
+            >Solutions</a
+          >
+          <a
+            class="text-stone-600 dark:text-stone-400 hover:text-orange-600 transition-colors duration-200"
+            href="#"
+            >Benefits</a
+          >
+          <a
+            class="text-stone-600 dark:text-stone-400 hover:text-orange-600 transition-colors duration-200"
+            href="#"
+            >How it Works</a
+          >
+          <a
+            class="text-stone-600 dark:text-stone-400 hover:text-orange-600 transition-colors duration-200"
+            href="#"
+            >Testimonials</a
+          >
+        </div>
+        <div class="flex items-center space-x-4">
+          <button
+            class="text-stone-600 font-semibold px-4 py-2 transition-transform scale-95 active:scale-90"
+          >
+            Partner Login
+          </button>
+          <button
+            class="signature-gradient text-white font-bold px-6 py-2 rounded-md transition-transform scale-95 active:scale-90"
+          >
+            Register Now
+          </button>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <!-- Hero Section -->
+      <section
+        class="relative min-h-[870px] flex items-center overflow-hidden bg-surface-container-low px-6"
+      >
+        <div
+          class="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center"
+        >
+          <div class="z-10">
+            <span
+              class="inline-block px-4 py-1.5 mb-6 rounded-full bg-secondary-fixed text-on-secondary-fixed text-xs font-bold tracking-widest uppercase"
+              >The Culinary Architect</span
+            >
+            <h1
+              class="text-5xl md:text-7xl font-extrabold text-on-surface leading-[1.05] tracking-tight mb-6"
+            >
+              Scale Your
+              <span class="text-primary-container">Catering Empire</span> with
+              Precision.
+            </h1>
+            <p
+              class="text-lg text-on-surface-variant mb-10 max-w-lg leading-relaxed"
+            >
+              Join the elite B2B network where culinary excellence meets
+              automated logistics. Empower your kitchen with the tools designed
+              for master chefs.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button
+                class="signature-gradient text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 group transition-all"
+              >
+                Join as Partner
+                <span
+                  class="material-symbols-outlined group-hover:translate-x-1 transition-transform"
+                  >arrow_forward</span
+                >
+              </button>
+              <button
+                class="bg-surface-container-lowest text-on-surface px-8 py-4 rounded-xl font-bold text-lg border border-outline-variant/20 hover:bg-white transition-all"
+              >
+                View Solutions
+              </button>
+            </div>
+          </div>
+          <div class="relative hidden md:block">
+            <div
+              class="absolute -top-20 -right-20 w-96 h-96 bg-primary-container/10 rounded-full blur-3xl"
+            ></div>
+            <div
+              class="rounded-3xl overflow-hidden shadow-2xl rotate-2 relative z-10 border-[12px] border-white"
+            >
+              <img
+                alt="Chef at Work"
+                class="w-full h-[600px] object-cover"
+                data-alt="Professional chef plating exquisite gourmet appetizers in a high-end commercial kitchen with warm atmospheric lighting"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNCtdaw5SvJdd_3CNGbFJcBEAYjSxQzV3XT1oCo0LIGz4Yw3prn0S02_P74seS6I8bztYwwdCA2Dlh4pny7X2ubvrZuyEdqm-MbZ2U3fqJe5i1z2FjUCakH8ragVDHrVS-g8Pk-DaRZIxlkUrryWkQxGlRjbCPp38QlCC7k1kjuIM7dJPGPDK4SAirZoe1RRmlbJqTZ_KfigOd0ngbPA2sM6pEoxuFpEHxxNiQvGTP17EngRaOEHV5SUqQqWAfOKi02QCNpRHSsDmg"
+              />
+            </div>
+            <div
+              class="absolute -bottom-10 -left-10 glass-card p-6 rounded-2xl shadow-xl z-20 max-w-xs"
+            >
+              <div class="flex items-center gap-4 mb-3">
+                <div class="p-2 bg-tertiary/10 rounded-lg">
+                  <span class="material-symbols-outlined text-tertiary"
+                    >trending_up</span
+                  >
+                </div>
+                <span class="font-bold text-on-surface">Live Performance</span>
+              </div>
+              <p class="text-2xl font-black text-primary tracking-tighter">
+                +42% Reach
+              </p>
+              <p class="text-xs text-on-surface-variant">
+                Average growth for new partners in first 90 days.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Benefits Section: Bento Grid -->
+      <section class="py-24 px-6 bg-surface">
+        <div class="max-w-7xl mx-auto">
+          <div class="mb-16">
+            <h2
+              class="text-3xl md:text-5xl font-extrabold text-on-surface mb-4"
+            >
+              Precision Benefits
+            </h2>
+            <p class="text-on-surface-variant max-w-2xl">
+              We don't just find you customers; we architect your operational
+              success.
+            </p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Increased Reach -->
+            <div
+              class="md:col-span-2 bg-surface-container-low rounded-full p-8 md:p-12 flex flex-col justify-between overflow-hidden relative group"
+            >
+              <div class="relative z-10">
+                <div
+                  class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-8"
+                >
+                  <span class="material-symbols-outlined text-primary text-3xl"
+                    >public</span
+                  >
+                </div>
+                <h3 class="text-3xl font-bold text-on-surface mb-4">
+                  Exponential Reach
+                </h3>
+                <p class="text-on-surface-variant text-lg max-w-md">
+                  Connect with top-tier corporate clients and large-scale event
+                  planners actively looking for professional catering
+                  excellence.
+                </p>
+              </div>
+              <div
+                class="absolute right-[-10%] bottom-[-10%] w-1/2 opacity-20 group-hover:scale-110 transition-transform duration-700"
+              >
+                <img
+                  alt="Reach"
+                  class="rounded-full aspect-square object-cover"
+                  data-alt="Top down view of a modern office meeting with professionals sharing diverse catering platters and laughing"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1amHP7jucAW3D9UakrspY3BwySSmklc2mJPtR1dVr_WMZA8VTfREck96Bfc_8f85iK_S52aszx1c78pMcb_4dnXXQksrUVmpkq3olwkfFlmmZJZkYXNFUaSsyrZ9znkXGuAxE6vhmDrSnWQoZvQnYfRr0Ib24vHJ8ncng1NMqohgF582Th2mqUCP19u_B3Io5sTwvwElCYQnljKuZlv2sSWhy_EwN2_40FnNxI26jiRmFJk3NHUPDWgarUIlxc6gflNncRIPjwver"
+                />
+              </div>
+            </div>
+            <!-- Automated Ordering -->
+            <div
+              class="bg-surface-container-highest rounded-full p-8 flex flex-col justify-center text-center"
+            >
+              <div
+                class="w-20 h-20 bg-primary-container rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary-container/20"
+              >
+                <span
+                  class="material-symbols-outlined text-white text-4xl"
+                  data-weight="fill"
+                  style="font-variation-settings: &quot;FILL&quot; 1"
+                  >automation</span
+                >
+              </div>
+              <h3 class="text-2xl font-bold text-on-surface mb-2">
+                Smart Automation
+              </h3>
+              <p class="text-on-surface-variant">
+                Eliminate manual data entry. Orders flow directly into your
+                kitchen workflow with precise specs.
+              </p>
+            </div>
+            <!-- Digital Payments -->
+            <div
+              class="bg-secondary-container rounded-full p-8 flex items-center gap-6"
+            >
+              <div
+                class="flex-shrink-0 w-16 h-16 bg-white/50 rounded-2xl flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-secondary text-3xl"
+                  >payments</span
+                >
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-on-secondary-container">
+                  Seamless Payments
+                </h3>
+                <p class="text-on-secondary-container/80 text-sm">
+                  Automated invoicing and instant digital settlements for every
+                  order.
+                </p>
+              </div>
+            </div>
+            <!-- Analytics -->
+            <div
+              class="md:col-span-2 bg-white rounded-full p-8 flex items-center justify-between border border-outline-variant/10 shadow-sm"
+            >
+              <div class="max-w-xs">
+                <h3 class="text-2xl font-bold text-on-surface mb-2">
+                  Deep Analytics
+                </h3>
+                <p class="text-on-surface-variant text-sm">
+                  Track margins, popular menu items, and client feedback in
+                  real-time.
+                </p>
+              </div>
+              <div class="flex gap-2">
+                <div class="h-16 w-3 bg-primary/20 rounded-full self-end"></div>
+                <div class="h-24 w-3 bg-primary/40 rounded-full self-end"></div>
+                <div class="h-32 w-3 bg-primary rounded-full self-end"></div>
+                <div class="h-20 w-3 bg-primary/60 rounded-full self-end"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- How it Works Section -->
+      <section class="py-24 px-6 bg-surface-container-low">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-20">
+            <h2
+              class="text-4xl md:text-5xl font-black text-on-surface tracking-tighter mb-4"
+            >
+              The Onboarding Blueprint
+            </h2>
+            <p class="text-on-surface-variant">
+              Three steps from kitchen setup to high-volume revenue.
+            </p>
+          </div>
+          <div class="grid md:grid-cols-3 gap-12 relative">
+            <!-- Step 1 -->
+            <div class="relative">
+              <div
+                class="text-[120px] font-black text-primary/5 absolute -top-20 left-0 select-none"
+              >
+                01
+              </div>
+              <div class="relative z-10">
+                <h3 class="text-2xl font-bold text-on-surface mb-4">
+                  Digital Profile Setup
+                </h3>
+                <p class="text-on-surface-variant leading-relaxed">
+                  Showcase your culinary range, certifications, and capacity.
+                  Our team helps you curate a menu optimized for B2B
+                  procurement.
+                </p>
+              </div>
+            </div>
+            <!-- Step 2 -->
+            <div class="relative">
+              <div
+                class="text-[120px] font-black text-primary/5 absolute -top-20 left-0 select-none"
+              >
+                02
+              </div>
+              <div class="relative z-10">
+                <h3 class="text-2xl font-bold text-on-surface mb-4">
+                  Smart Order Matching
+                </h3>
+                <p class="text-on-surface-variant leading-relaxed">
+                  Our algorithm matches your specialty with corporate requests.
+                  Accept orders with a single tap through the Mitra Portal.
+                </p>
+              </div>
+            </div>
+            <!-- Step 3 -->
+            <div class="relative">
+              <div
+                class="text-[120px] font-black text-primary/5 absolute -top-20 left-0 select-none"
+              >
+                03
+              </div>
+              <div class="relative z-10">
+                <h3 class="text-2xl font-bold text-on-surface mb-4">
+                  Deliver &amp; Get Paid
+                </h3>
+                <p class="text-on-surface-variant leading-relaxed">
+                  Execute the order. Once delivery is confirmed via the app,
+                  your payment is processed automatically within our secure
+                  network.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mt-20 rounded-3xl overflow-hidden bg-on-surface h-96 relative group"
+          >
+            <img
+              alt="Logistics"
+              class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-1000"
+              data-alt="Cinematic shot of a professional catering team loading elegant black transport boxes into a clean delivery vehicle"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjW394e65jicvPCJuuRHoxvKMpBFUpDUyF7Fn0MEMj_risLFlIDrIQMgLbZxs_ZJXM2JikSbIolNllWNFlVYu2l2inOSkeAWnRkfiORTSAG6W712L3DrSmaLIO33T7YorDMjmjh-1msKeE4NYv4BLV7BusUvyVFjzgCVmdTfqh0dhlsxIta6Hv6QDGJnMZrQQGgj9u_woNeYWkofVaL3t-dCWrdZoz0pwqGnpCQJlEjLzozIisJgyhN-OBIntpT8GKsYAbgC-A1fBC"
+            />
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center text-center p-6"
+            >
+              <h4 class="text-3xl font-bold text-white mb-4">
+                Ready to Architect Your Future?
+              </h4>
+              <button
+                class="signature-gradient text-white px-10 py-4 rounded-xl font-bold text-lg"
+              >
+                Apply to Join Today
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Testimonials Section -->
+      <section class="py-24 px-6 bg-surface">
+        <div class="max-w-7xl mx-auto">
+          <div
+            class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6"
+          >
+            <div>
+              <h2
+                class="text-4xl font-extrabold text-on-surface tracking-tight mb-2"
+              >
+                Partner Stories
+              </h2>
+              <p class="text-on-surface-variant">
+                Real impact from the culinary frontlines.
+              </p>
+            </div>
+            <div class="flex gap-4">
+              <button
+                class="p-3 rounded-full border border-outline-variant hover:bg-surface-container-low transition-colors"
+              >
+                <span class="material-symbols-outlined">west</span>
+              </button>
+              <button
+                class="p-3 rounded-full bg-primary text-white transition-colors"
+              >
+                <span class="material-symbols-outlined">east</span>
+              </button>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 gap-8">
+            <!-- Testimonial 1 -->
+            <div class="bg-surface-container-low p-10 rounded-3xl relative">
+              <span
+                class="material-symbols-outlined text-primary-container text-6xl opacity-20 absolute top-8 right-8"
+                >format_quote</span
+              >
+              <div class="relative z-10">
+                <p class="text-xl italic text-on-surface mb-8 leading-relaxed">
+                  "AlaCater Mitra transformed our idle kitchen hours into
+                  high-margin corporate revenue. The automated ordering system
+                  cut our admin time by 70%."
+                </p>
+                <div class="flex items-center gap-4">
+                  <div
+                    class="w-14 h-14 rounded-full overflow-hidden bg-stone-200"
+                  >
+                    <img
+                      alt="Chef Sarah"
+                      class="w-full h-full object-cover"
+                      data-alt="Professional headshot of a smiling female executive chef in a white uniform"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWNBnQp15CLGHNUNzb0LOD5joK8iWkPixx520Q9f9GDGUbt-wEs3IBoImbH4yOi7Jgw-rhG7TFulqfe-OcWE94zf3vdL_Z0mBEk01fegkiXQywG1ntkqE3nPInCA6yCa8tO0Df4oye3GIgd_IrpDmUAa1axKbmXjH8q8xAvvpkL8LmLu9NiWOjva6FWylvnQCmEKNDUWxPLWCfYrs-xQwu2H86Iok93bUwlODyVKdEqIW0iiJnwXb94DxRRncFRwkzUvxsSyKzG8me"
+                    />
+                  </div>
+                  <div>
+                    <p class="font-bold text-on-surface">
+                      Chef Elena Rodriguez
+                    </p>
+                    <p class="text-sm text-on-surface-variant">
+                      Artisan Kitchens Group
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Testimonial 2 -->
+            <div class="bg-surface-container-highest p-10 rounded-3xl relative">
+              <span
+                class="material-symbols-outlined text-primary-container text-6xl opacity-20 absolute top-8 right-8"
+                >format_quote</span
+              >
+              <div class="relative z-10">
+                <p class="text-xl italic text-on-surface mb-8 leading-relaxed">
+                  "The transparency in payments is what sold us. No more chasing
+                  invoices. AlaCater handles the B2B complexity while we focus
+                  on the food."
+                </p>
+                <div class="flex items-center gap-4">
+                  <div
+                    class="w-14 h-14 rounded-full overflow-hidden bg-stone-200"
+                  >
+                    <img
+                      alt="Marcus"
+                      class="w-full h-full object-cover"
+                      data-alt="Close-up portrait of a male business owner with a friendly expression in a modern restaurant setting"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyoKMpBkGp6wwYZs96cLvGqiGv7gCyQNBb5rvThlJf6xv0-o9wGGocgPhB3d5MnBAEmZwuiXmpzPUxGa27KTSLpriSZCcT7jg2tktKitAWpvFRqUivpYACO0YiOTJnl5SOjmR1d-8jpFgUWXzTqM5y-jBu2o5d42SKB6eODv7waPB9Z317WW_ybFKdE2PEdcY3M2iJxrTkjTxrSE5cXoJXjrtbqsNWC2TtI-OPaE4Mn-lZEsMt6kJgOJOpNLarY_hfHVuoB6cvoGFI"
+                    />
+                  </div>
+                  <div>
+                    <p class="font-bold text-on-surface">Marcus Thorne</p>
+                    <p class="text-sm text-on-surface-variant">
+                      Founder, Epicurean Events
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- CTA Section -->
+      <section class="py-24 px-6">
+        <div
+          class="max-w-5xl mx-auto signature-gradient rounded-[3rem] p-12 md:p-20 text-center text-white relative overflow-hidden"
+        >
+          <div
+            class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"
+          ></div>
+          <div class="relative z-10">
+            <h2 class="text-4xl md:text-6xl font-black mb-6 tracking-tight">
+              Become a Culinary Architect Today.
+            </h2>
+            <p class="text-white/80 text-lg mb-12 max-w-2xl mx-auto">
+              Applications are currently open for professional catering partners
+              in major metropolitan areas. Secure your spot in the future of B2B
+              dining.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                class="bg-white text-primary px-10 py-4 rounded-xl font-bold text-lg hover:bg-surface-container-low transition-colors"
+              >
+                Start Your Application
+              </button>
+              <button
+                class="bg-primary/20 backdrop-blur-md text-white border border-white/30 px-10 py-4 rounded-xl font-bold text-lg"
+              >
+                Contact Sales
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Footer -->
+    <footer
+      class="bg-stone-50 dark:bg-stone-950 border-t border-stone-200/10 dark:border-stone-800/20 w-full py-12 px-6"
+    >
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+        <div class="col-span-1 md:col-span-1">
+          <div class="font-bold text-stone-900 dark:text-white text-xl mb-4">
+            AlaCater Mitra
+          </div>
+          <p
+            class="text-xs font-normal text-stone-500 dark:text-stone-400 leading-relaxed"
+          >
+            © 2024 AlaCater. All rights reserved. Professional B2B Catering
+            Excellence.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-bold text-stone-900 dark:text-white text-sm mb-4">
+            Platform
+          </h4>
+          <ul class="space-y-2">
+            <li>
+              <a
+                class="text-xs font-normal text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors underline underline-offset-4"
+                href="#"
+                >Solutions</a
+              >
+            </li>
+            <li>
+              <a
+                class="text-xs font-normal text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors underline underline-offset-4"
+                href="#"
+                >Pricing</a
+              >
+            </li>
+            <li>
+              <a
+                class="text-xs font-normal text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors underline underline-offset-4"
+                href="#"
+                >Partner Success</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-stone-900 dark:text-white text-sm mb-4">
+            Support
+          </h4>
+          <ul class="space-y-2">
+            <li>
+              <a
+                class="text-xs font-normal text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors underline underline-offset-4"
+                href="#"
+                >Privacy Policy</a
+              >
+            </li>
+            <li>
+              <a
+                class="text-xs font-normal text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors underline underline-offset-4"
+                href="#"
+                >Terms of Service</a
+              >
+            </li>
+            <li>
+              <a
+                class="text-xs font-normal text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors underline underline-offset-4"
+                href="#"
+                >Help Center</a
+              >
+            </li>
+            <li>
+              <a
+                class="text-xs font-normal text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors underline underline-offset-4"
+                href="#"
+                >Contact Support</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-stone-900 dark:text-white text-sm mb-4">
+            Newsletter
+          </h4>
+          <p class="text-xs text-stone-500 mb-4">
+            Industry insights for professional caterers.
+          </p>
+          <div class="flex gap-2">
+            <input
+              class="bg-white dark:bg-stone-900 border-none text-xs rounded-lg px-3 py-2 w-full focus:ring-1 focus:ring-primary outline-none"
+              placeholder="Email"
+              type="email"
+            />
+            <button class="bg-primary text-white p-2 rounded-lg">
+              <span class="material-symbols-outlined text-sm">send</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
