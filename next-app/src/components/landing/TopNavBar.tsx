@@ -36,16 +36,18 @@ export function TopNavBar() {
           >
         </div>
         <div className="flex items-center space-x-4">
-          <button
+          <Link
+            href="/login"
             className="text-stone-600 font-semibold px-4 py-2 transition-transform scale-95 active:scale-90"
           >
             Partner Login
-          </button>
-          <button
+          </Link>
+          <Link
+            href="/signup"
             className="signature-gradient text-white font-bold px-6 py-2 rounded-md transition-transform scale-95 active:scale-90"
           >
             Register Now
-          </button>
+          </Link>
         </div>
       </nav>
     </header>
