@@ -2,6 +2,7 @@
 // Based on ITA §4 - Database Schema (Prisma)
 // Reference: docs/projects/04.Implementation-Technical-Architecture.md
 
+
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -9,6 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // ============================================
@@ -53,7 +55,7 @@ model User {
   phone           String?
   avatar          String?
   businessName    String?   @map("business_name")
-  role            UserRole[]  @default(CUSTOMER)
+  role            UserRole[]  @default([CUSTOMER])
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   lastLoginAt     DateTime?
@@ -62,6 +64,7 @@ model User {
   customer        Customer?
   provider        Provider?
   notifications   Notification[]
+  statusChanges   OrderStatusHistory[]
 
   @@index([email])
   @@index([role])
@@ -402,6 +405,7 @@ model Order {
 
   // Relations
   items             OrderItem[]
+  statusHistory     OrderStatusHistory[]
 
   @@index([customerId])
   @@index([providerId])
@@ -436,6 +440,21 @@ model OrderItem {
 
   @@index([orderId])
   @@index([productId])
+}
+
+model OrderStatusHistory {
+  id          String      @id @default(uuid())
+  orderId     String
+  order       Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  oldStatus   OrderStatus?
+  newStatus   OrderStatus
+  changedById String?
+  changedBy   User?       @relation(fields: [changedById], references: [id])
+  notes       String?
+  createdAt   DateTime    @default(now())
+
+  @@index([orderId])
+  @@index([changedById])
 }
 
 // ============================================
