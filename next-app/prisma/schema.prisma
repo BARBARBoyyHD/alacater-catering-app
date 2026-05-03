@@ -52,7 +52,8 @@ model User {
   name            String?
   phone           String?
   avatar          String?
-  role            UserRole  @default(CUSTOMER)
+  businessName    String?   @map("business_name")
+  role            UserRole[]  @default(CUSTOMER)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   lastLoginAt     DateTime?
@@ -64,6 +65,11 @@ model User {
 
   @@index([email])
   @@index([role])
+}
+
+model partnerProfile {
+  id              String    @id @default(uuid())
+  
 }
 
 enum UserRole {
